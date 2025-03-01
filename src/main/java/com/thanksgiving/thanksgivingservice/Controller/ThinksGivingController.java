@@ -61,9 +61,17 @@ public class ThinksGivingController {
             description = "HTTP Status 201 CREATED"
     )
     @PostMapping
-    public ResponseEntity<ThanksGiving> createThanksGiving(@RequestBody ThanksGiving thanksGiving){
-        return new ResponseEntity<>(thanksGivingServiceImp.createThanksGiving(thanksGiving), HttpStatus.CREATED);
+    public ResponseEntity<ThanksGiving> createThanksGiving(
+            @RequestBody ThanksGiving thanksGiving,
+            @RequestHeader(name = "Authorization", required = true) String authorizationHeader) {
+
+        // Extract Bearer token (remove "Bearer " prefix)
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : authorizationHeader;
+
+        return new ResponseEntity<>(thanksGivingServiceImp.createThanksGiving(thanksGiving, token), HttpStatus.CREATED);
     }
+
+
 
     @Operation(
             summary = "Updating thanksGiving information",

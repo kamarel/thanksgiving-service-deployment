@@ -1,5 +1,6 @@
 package com.thanksgiving.thanksgivingservice.Service;
 
+import com.google.common.net.HttpHeaders;
 import com.thanksgiving.thanksgivingservice.Dto.ApiResponseDto;
 import com.thanksgiving.thanksgivingservice.Dto.MembersDto;
 import com.thanksgiving.thanksgivingservice.Entity.Section;
@@ -30,23 +31,22 @@ public class ThanksGivingServiceImp implements ThanksGivingService{
     private EmailService emailService;
 
     @Override
-    public ThanksGiving createThanksGiving(ThanksGiving thanksGiving) {
-        // Save the harvest
-        ThanksGiving thanksGiving1 = thanksGivingRepository.save(thanksGiving);
+    public ThanksGiving createThanksGiving(ThanksGiving thanksGiving, String token) {
+        ThanksGiving savedThanksGiving = thanksGivingRepository.save(thanksGiving);
 
-        // Get all members
-        ApiResponseDto apiResponseDto = getAllMembers();
+        // Get all members using the provided token
+        ApiResponseDto apiResponseDto = getAllMembers(token);
         List<MembersDto> membersDtoList = apiResponseDto.getMembersDtoList();
 
-        // Extract email addresses from the list of members
+        // Extract email addresses
         List<String> emails = membersDtoList.stream()
-                .map(MembersDto::getEmail)  // Assuming MembersDto has a getEmail() method
+                .map(MembersDto::getEmail) // Ensure MembersDto has getEmail()
                 .collect(Collectors.toList());
 
-        // Send notification to all member emails
+        // Send notification
         emailService.sendHarvestNotification(emails);
 
-        return thanksGiving1;
+        return savedThanksGiving;
     }
 
     @Override
@@ -90,19 +90,20 @@ public class ThanksGivingServiceImp implements ThanksGivingService{
         thanksGivingRepository.deleteAll();
     }
 
+
+
     @Override
-    public ApiResponseDto getAllMembers() {
+    public ApiResponseDto getAllMembers(String token) {
         Mono<List<MembersDto>> listMono = webClient.get()
-                .uri("https://strong-alignment-production.up.railway.app/api/v1/members")
+                .uri("https://distinguished-education-production.up.railway.app/api/v1/members") // Use API Gateway
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) // Attach the JWT token
                 .retrieve()
                 .bodyToFlux(MembersDto.class)
                 .collectList();
 
-
-        List<MembersDto>membersDtoList = listMono.block();
+        List<MembersDto> membersDtoList = listMono.block();
 
         ApiResponseDto apiResponseDto = new ApiResponseDto();
-
         apiResponseDto.setMembersDtoList(membersDtoList);
 
         return apiResponseDto;

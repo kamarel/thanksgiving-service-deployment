@@ -6,7 +6,7 @@ import com.thanksgiving.thanksgivingservice.Entity.ThanksGiving;
 import java.util.List;
 
 public interface ThanksGivingService {
-    ThanksGiving createThanksGiving(ThanksGiving harvest);
+    ThanksGiving createThanksGiving(ThanksGiving harvest, String token);
 
     ThanksGiving updateThanksGiving(Long id, ThanksGiving updatedHarvest);
 
@@ -19,5 +19,5 @@ public interface ThanksGivingService {
     List<ThanksGiving> searchThanksGiving(String query);
     void deleteThanksGiving();
 
-    ApiResponseDto getAllMembers();
+    ApiResponseDto getAllMembers(String token);
 }
