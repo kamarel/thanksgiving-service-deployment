@@ -83,11 +83,12 @@ public class ThinksGivingController {
             description = "HTTP Status 201 OK"
     )
     @PutMapping("/{id}")
-    public ResponseEntity<ThanksGiving>updateThanksGiving(@PathVariable Long id, @RequestBody ThanksGiving thanksGiving){
-        ThanksGiving updateThanksGiving = thanksGivingServiceImp.updateThanksGiving(id, thanksGiving);
-
-        return new ResponseEntity<>(updateThanksGiving, HttpStatus.OK);
+    public ResponseEntity<ThanksGiving> updateThanksGiving(@PathVariable Long id, @RequestBody ThanksGiving thanksGiving) {
+        System.out.println("Updating ThanksGiving with ID: " + id);
+        ThanksGiving updatedThanksGiving = thanksGivingServiceImp.updateThanksGiving(id, thanksGiving);
+        return new ResponseEntity<>(updatedThanksGiving, HttpStatus.OK);
     }
+
 
     @Operation(
             summary = "Get all thanksGiving information",

@@ -21,13 +21,15 @@ public class SectionServiceImp implements SectionService{
 
     @Override
     public Section addSectionInHarvest(String thanksGivingId, Section section) {
-
-        ThanksGiving thanksGiving = thanksGivingRepository.findByThanksGivingId(thanksGivingId);
-
+        // This now returns the first matching ThanksGiving
+        ThanksGiving thanksGiving = thanksGivingRepository.findFirstByThanksGivingId(thanksGivingId);
+        if (thanksGiving == null) {
+            throw new RuntimeException("ThanksGiving not found for ID: " + thanksGivingId);
+        }
         section.setThanksGiving(thanksGiving);
-
         return sectionRepository.save(section);
     }
+
 
     @Override
     public Section updatedSection(Long id, Section sectionToUpdate) {

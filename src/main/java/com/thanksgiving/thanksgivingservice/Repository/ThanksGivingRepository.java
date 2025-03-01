@@ -15,5 +15,7 @@ public interface ThanksGivingRepository extends JpaRepository<ThanksGiving, Long
             "OR p.supervise LIKE CONCAT('%', :query, '%')")
     List<ThanksGiving> searchThanksGiving(@Param("query") String query);
 
-    ThanksGiving findByThanksGivingId(String thanksGivingId);
+    // Change the method name to findFirstByThanksGivingId so it returns the first match
+    ThanksGiving findFirstByThanksGivingId(String thanksGivingId);
 }
+
